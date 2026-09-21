@@ -1,0 +1,88 @@
+<div class="ins-page">
+  <!-- Particles -->
+  <div class="ins-particles"><span></span><span></span><span></span><span></span><span></span></div>
+
+  <!-- Hero Header -->
+  <div class="ins-hero">
+    <div class="ins-hero-left">
+      <div class="ins-hero-icon-wrap">
+        <div class="ins-icon-ring"></div>
+        <span class="ins-hero-emoji">📈</span>
+      </div>
+      <div>
+        <h2 class="ins-title">Financial Insights</h2>
+        <p class="ins-subtitle">See your income, expenses, and savings trends</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div class="ins-error-card" *ngIf="errorMessage">
+    <span class="ins-error-icon">⚠️</span>
+    <p>{{ errorMessage }}</p>
+    <button class="ins-back-btn" (click)="goBack()">← Back to Dashboard</button>
+  </div>
+
+  <ng-container *ngIf="!errorMessage">
+    <!-- Stats Cards -->
+    <div class="ins-stats-grid" *ngIf="!isLoading; else loading">
+      <div class="ins-stat-card income">
+        <div class="ins-stat-glow income-glow"></div>
+        <div class="ins-stat-icon">📥</div>
+        <div class="ins-stat-content">
+          <span class="ins-stat-label">Total Income</span>
+          <span class="ins-stat-value">{{ formatCurrency(insights?.totalIncome) }}</span>
+        </div>
+        <div class="ins-stat-accent income-accent"></div>
+      </div>
+      <div class="ins-stat-card expense">
+        <div class="ins-stat-glow expense-glow"></div>
+        <div class="ins-stat-icon">📤</div>
+        <div class="ins-stat-content">
+          <span class="ins-stat-label">Total Expense</span>
+          <span class="ins-stat-value">{{ formatCurrency(insights?.totalExpense) }}</span>
+        </div>
+        <div class="ins-stat-accent expense-accent"></div>
+      </div>
+      <div class="ins-stat-card savings" [class.negative]="savingsNegative">
+        <div class="ins-stat-glow savings-glow"></div>
+        <div class="ins-stat-icon">{{ savingsNegative ? '📉' : '💰' }}</div>
+        <div class="ins-stat-content">
+          <span class="ins-stat-label">Net Savings</span>
+          <span class="ins-stat-value">{{ formatCurrency(insights?.savings) }}</span>
+          <span class="ins-stat-sub" [class.negative]="savingsNegative">
+            {{ savingsNegative ? '⚠️ Spending exceeds income' : '✅ Healthy savings position' }}
+          </span>
+        </div>
+        <div class="ins-stat-accent" [class.savings-accent]="!savingsNegative" [class.expense-accent]="savingsNegative"></div>
+      </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="ins-chart-section" *ngIf="!isLoading">
+      <div class="ins-chart-header">
+        <h3 class="ins-chart-title"><span>📊</span> 6-Month Income vs Expense Trend</h3>
+      </div>
+      <div class="ins-chart-wrapper">
+        <canvas
+          baseChart
+          [data]="chartData"
+          [options]="chartOptions"
+          [type]="chartType">
+        </canvas>
+      </div>
+    </div>
+
+    <!-- Loading Skeleton -->
+    <ng-template #loading>
+      <div class="ins-stats-grid">
+        <div class="ins-stat-card skeleton"></div>
+        <div class="ins-stat-card skeleton"></div>
+        <div class="ins-stat-card skeleton"></div>
+      </div>
+      <div class="ins-chart-section">
+        <div class="ins-chart-skeleton"></div>
+      </div>
+    </ng-template>
+  </ng-container>
+</div>

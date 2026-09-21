@@ -1,0 +1,169 @@
+/* ============================================================
+   PREMIUM REWARDS PAGE
+   ============================================================ */
+
+.rwd-page {
+  position: relative;
+  max-width: 100%;
+  color: #ffffff;
+  animation: rwdSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes rwdSlideUp { from{opacity:0;transform:translateY(24px);} to{opacity:1;transform:translateY(0);} }
+
+/* Particles */
+.rwd-particles { position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+.rwd-particles span { position:absolute; width:5px; height:5px; border-radius:50%; background:rgba(245,158,11,0.2); animation:rwdFloat 6s infinite ease-in-out; }
+.rwd-particles span:nth-child(1){left:10%;top:12%;animation-delay:0s;}
+.rwd-particles span:nth-child(2){left:75%;top:8%;animation-delay:1.5s;width:4px;height:4px;}
+.rwd-particles span:nth-child(3){left:88%;top:45%;animation-delay:3s;width:7px;height:7px;}
+.rwd-particles span:nth-child(4){left:20%;top:70%;animation-delay:2s;}
+.rwd-particles span:nth-child(5){left:55%;top:30%;animation-delay:4s;width:3px;height:3px;}
+@keyframes rwdFloat{0%,100%{transform:translateY(0) scale(1);opacity:0.2;}50%{transform:translateY(-18px) scale(1.4);opacity:0.6;}}
+
+/* Hero */
+.rwd-hero { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:16px; position:relative; z-index:1; }
+.rwd-hero-left { display:flex; align-items:center; gap:16px; }
+.rwd-hero-icon-wrap { position:relative; width:56px; height:56px; display:flex; align-items:center; justify-content:center; background:radial-gradient(circle,rgba(245,158,11,0.12) 0%,transparent 70%); }
+.rwd-icon-ring { position:absolute; inset:0; border-radius:50%; border:2px solid transparent; border-top-color:#f59e0b; border-right-color:rgba(245,158,11,0.3); animation:rwdSpin 3s linear infinite; }
+@keyframes rwdSpin{to{transform:rotate(360deg);}}
+.rwd-hero-emoji { font-size:24px; z-index:1; }
+.rwd-title { font-size:1.5rem; font-weight:800; color:#fff; margin:0; letter-spacing:-0.3px; }
+.rwd-subtitle { font-size:13px; color:rgba(255,255,255,0.4); margin:4px 0 0; }
+
+/* Layout */
+.rwd-layout { display:flex; gap:24px; position:relative; z-index:1; }
+.rwd-main { flex:1; min-width:0; }
+.rwd-sidebar { min-width:300px; max-width:320px; display:flex; flex-direction:column; gap:18px; }
+
+/* Points Hero Card */
+.rwd-points-card {
+  position:relative; overflow:hidden;
+  background:linear-gradient(135deg, rgba(15,10,40,0.9), rgba(30,27,75,0.8));
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:24px; padding:32px;
+  margin-bottom:28px; backdrop-filter:blur(20px);
+}
+.rwd-points-glow {
+  position:absolute; width:200px; height:200px; border-radius:50%;
+  background:rgba(245,158,11,0.1); filter:blur(60px); top:-50px; right:-30px;
+}
+.rwd-points-content { display:flex; justify-content:space-between; align-items:center; position:relative; z-index:1; margin-bottom:24px; }
+.rwd-points-left { display:flex; flex-direction:column; gap:12px; }
+
+.rwd-tier-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:8px 18px; border-radius:24px;
+  font-size:12px; font-weight:800; color:white;
+  letter-spacing:1.2px; text-transform:uppercase;
+  box-shadow:0 4px 14px rgba(0,0,0,0.2);
+  width:fit-content;
+}
+.rwd-tier-icon { font-size:14px; }
+.rwd-next-tier { font-size:14px; color:rgba(255,255,255,0.5); font-weight:500; }
+
+/* Points Ring */
+.rwd-points-ring {
+  width:120px; height:120px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 30px rgba(245,158,11,0.15);
+}
+.rwd-points-ring-inner {
+  width:96px; height:96px; border-radius:50%;
+  background:rgba(15,10,40,0.92);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+}
+.rwd-pts-number { font-size:28px; font-weight:900; color:#fff; line-height:1; }
+.rwd-pts-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:rgba(255,255,255,0.4); }
+
+/* Progress Section */
+.rwd-progress-section { position:relative; z-index:1; }
+.rwd-progress-labels { display:flex; justify-content:space-between; margin-bottom:8px; font-size:12px; color:rgba(255,255,255,0.4); font-weight:600; }
+.rwd-progress-track { height:8px; background:rgba(255,255,255,0.08); border-radius:8px; overflow:hidden; }
+.rwd-progress-fill { height:100%; border-radius:8px; transition:width 0.8s cubic-bezier(0.16,1,0.3,1); position:relative; overflow:hidden; }
+.rwd-progress-shine { position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent); animation:rwdShine 2s infinite; }
+@keyframes rwdShine{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+
+/* Earn Section */
+.rwd-earn-section { margin-bottom:24px; }
+.rwd-section-title { display:flex; align-items:center; gap:8px; font-size:16px; font-weight:700; color:rgba(255,255,255,0.85); margin:0 0 18px; }
+
+.rwd-earn-grid { display:flex; flex-direction:column; gap:10px; }
+
+.rwd-earn-card {
+  display:flex; align-items:center; gap:16px;
+  padding:16px 20px;
+  background:rgba(255,255,255,0.025);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:16px;
+  transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+  animation:rwdCardIn 0.35s cubic-bezier(0.16,1,0.3,1) backwards;
+}
+@keyframes rwdCardIn{from{opacity:0;transform:translateX(-10px);}to{opacity:1;transform:translateX(0);}}
+.rwd-earn-card:hover { background:rgba(255,255,255,0.05); border-color:rgba(245,158,11,0.15); transform:translateX(4px); }
+
+.rwd-earn-icon-wrap {
+  width:44px; height:44px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; flex-shrink:0;
+}
+
+.rwd-earn-info { flex:1; }
+.rwd-earn-info h4 { margin:0 0 2px; font-size:14px; font-weight:700; color:rgba(255,255,255,0.85); }
+.rwd-earn-info p { margin:0; font-size:12px; color:rgba(255,255,255,0.4); }
+
+.rwd-earn-badge {
+  padding:5px 12px; border-radius:20px;
+  background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.2);
+  font-size:12px; font-weight:800; color:#34d399;
+  white-space:nowrap;
+}
+
+/* Sidebar Cards */
+.rwd-side-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); border-radius:18px; padding:22px; backdrop-filter:blur(12px); }
+.rwd-side-title { display:flex; align-items:center; gap:8px; font-size:14px; font-weight:700; color:rgba(255,255,255,0.8); margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.06); }
+
+/* Tier Progress List */
+.rwd-tier-list { display:flex; flex-direction:column; gap:0; }
+.rwd-tier-item { display:flex; align-items:center; gap:14px; padding:12px 0; position:relative; }
+.rwd-tier-left { display:flex; flex-direction:column; align-items:center; gap:0; }
+.rwd-tier-dot { width:14px; height:14px; border-radius:50%; flex-shrink:0; border:2px solid rgba(255,255,255,0.1); z-index:1; }
+.rwd-tier-line { width:2px; height:24px; background:rgba(255,255,255,0.08); }
+.rwd-tier-line.filled { background:linear-gradient(180deg,#34d399,rgba(52,211,153,0.3)); }
+.rwd-tier-item.active .rwd-tier-dot { box-shadow:0 0 10px currentColor; transform:scale(1.2); }
+.rwd-tier-item.completed .rwd-tier-dot { border-color:transparent; }
+.rwd-tier-content { flex:1; }
+.rwd-tier-name { display:block; font-size:14px; font-weight:700; color:rgba(255,255,255,0.7); }
+.rwd-tier-item.active .rwd-tier-name { color:#fff; }
+.rwd-tier-range { display:block; font-size:11px; color:rgba(255,255,255,0.3); margin-top:2px; }
+.rwd-tier-check { width:22px; height:22px; border-radius:50%; background:rgba(16,185,129,0.15); color:#34d399; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; }
+
+/* Perks List */
+.rwd-perks-list { display:flex; flex-direction:column; gap:8px; }
+.rwd-perk-item {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 14px; border-radius:10px;
+  background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.04);
+  opacity:0.4; transition:all 0.3s;
+}
+.rwd-perk-item.unlocked { opacity:1; border-color:rgba(255,255,255,0.08); }
+.rwd-perk-icon { font-size:16px; }
+.rwd-perk-text { font-size:13px; color:rgba(255,255,255,0.6); font-weight:500; }
+.rwd-perk-item.unlocked .rwd-perk-text { color:rgba(255,255,255,0.8); }
+
+/* Info Card */
+.rwd-info-card { text-align:center; background:linear-gradient(135deg,rgba(245,158,11,0.06),rgba(252,211,77,0.04)); border-color:rgba(245,158,11,0.12); }
+.rwd-info-icon { font-size:32px; margin-bottom:10px; }
+.rwd-info-card h4 { font-size:14px; font-weight:700; color:rgba(255,255,255,0.8); margin:0 0 8px; }
+.rwd-info-card p { font-size:12px; line-height:1.6; color:rgba(255,255,255,0.4); margin:0; }
+.rwd-info-card p strong { color:#fbbf24; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .rwd-layout { flex-direction:column; }
+  .rwd-sidebar { min-width:unset; max-width:unset; }
+  .rwd-points-content { flex-direction:column; gap:20px; text-align:center; }
+  .rwd-points-left { align-items:center; }
+  .rwd-points-ring { width:100px; height:100px; }
+  .rwd-points-ring-inner { width:80px; height:80px; }
+  .rwd-pts-number { font-size:22px; }
+}

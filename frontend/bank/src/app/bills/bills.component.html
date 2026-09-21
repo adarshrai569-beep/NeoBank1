@@ -1,0 +1,276 @@
+<div class="bills-page">
+  <!-- Floating Particles -->
+  <div class="bill-particles"><span></span><span></span><span></span><span></span><span></span></div>
+
+  <!-- Hero Header -->
+  <div class="bill-hero">
+    <div class="bill-hero-left">
+      <div class="bill-hero-icon-wrap">
+        <div class="bill-icon-ring"></div>
+        <span class="bill-hero-emoji">🧾</span>
+      </div>
+      <div>
+        <h2 class="bill-title">Bill Payments</h2>
+        <p class="bill-subtitle">Manage and pay your bills on time</p>
+      </div>
+    </div>
+    <div class="bill-hero-actions">
+      <div class="bill-stat-chip" *ngIf="bills.length > 0">
+        <span class="bill-chip-icon">📋</span>
+        <span>{{ getPendingCount() }} pending</span>
+      </div>
+      <button class="bill-add-btn" (click)="showForm = !showForm">
+        <span class="bill-btn-icon">{{ showForm ? '✕' : '+' }}</span>
+        <span>{{ showForm ? 'Cancel' : 'Add Bill' }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Summary Stats Bar -->
+  <div class="bill-stats-bar" *ngIf="bills.length > 0">
+    <div class="bill-stat">
+      <span class="bill-stat-label">Total Bills</span>
+      <span class="bill-stat-value">{{ bills.length }}</span>
+    </div>
+    <div class="bill-stat-divider"></div>
+    <div class="bill-stat">
+      <span class="bill-stat-label">Paid</span>
+      <span class="bill-stat-value paid-color">{{ getPaidCount() }}</span>
+    </div>
+    <div class="bill-stat-divider"></div>
+    <div class="bill-stat">
+      <span class="bill-stat-label">Pending</span>
+      <span class="bill-stat-value pending-color">{{ getPendingCount() }}</span>
+    </div>
+    <div class="bill-stat-divider"></div>
+    <div class="bill-stat">
+      <span class="bill-stat-label">Total Amount</span>
+      <span class="bill-stat-value">₹{{ getTotalAmount() | number:'1.0-0' }}</span>
+    </div>
+  </div>
+
+  <!-- Create Bill Form -->
+  <div class="bill-form-card" *ngIf="showForm">
+    <div class="bill-form-header">
+      <span class="bill-form-icon">✨</span>
+      <h3>Add New Bill</h3>
+      <p>Track a new payment obligation</p>
+    </div>
+    <div class="bill-form-body">
+      <div class="bill-form-group">
+        <label class="bill-form-label">Category</label>
+        <div class="bill-select-wrapper">
+          <span class="bill-input-icon">📁</span>
+          <select [(ngModel)]="newBiller" class="bill-select">
+            <option value="">Select Category</option>
+            <option *ngFor="let cat of billerCategories" [value]="cat">{{ cat }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="bill-form-group" *ngIf="newBiller === 'OTHER'">
+        <label class="bill-form-label">Biller Name</label>
+        <div class="bill-input-wrap">
+          <span class="bill-input-icon">✏️</span>
+          <input type="text" [(ngModel)]="customBiller" placeholder="Enter biller name" class="bill-styled-input" />
+        </div>
+      </div>
+      <div class="bill-form-group">
+        <label class="bill-form-label">Amount</label>
+        <div class="bill-amount-wrapper">
+          <span class="bill-currency">₹</span>
+          <input type="number" [(ngModel)]="newAmount" placeholder="0.00" class="bill-amount-input" min="1" />
+        </div>
+      </div>
+      <div class="bill-form-group">
+        <label class="bill-form-label">Due Date</label>
+        <div class="bill-input-wrap">
+          <span class="bill-input-icon">📅</span>
+          <input type="date" [(ngModel)]="newDueDate" class="bill-styled-input" />
+        </div>
+      </div>
+      <button class="bill-submit-btn" (click)="createBill()">
+        <span>🚀</span> Add Bill
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="bill-layout" *ngIf="bills.length > 0">
+    <!-- Left: Bill Cards Grid -->
+    <div class="bill-main">
+      <div class="bill-grid">
+    <div *ngFor="let b of bills; let i = index" class="bill-card"
+         [class.bill-paid]="b.status === 'PAID'"
+         [class.bill-pending]="b.status === 'PENDING'"
+         [class.bill-overdue]="b.status === 'OVERDUE'"
+         [style.animation-delay]="i * 0.06 + 's'">
+      
+      <!-- Card Accent Glow -->
+      <div class="bill-card-glow"
+           [style.background]="b.status === 'PAID' ? 'rgba(16,185,129,0.08)' : b.status === 'OVERDUE' ? 'rgba(239,68,68,0.08)' : 'rgba(251,191,36,0.08)'">
+      </div>
+
+      <!-- Card Header -->
+      <div class="bill-card-header">
+        <div class="bill-biller-info">
+          <span class="bill-biller-icon">{{ getBillerIcon(b.billerName) }}</span>
+          <h4 class="bill-biller-name">{{ b.billerName }}</h4>
+        </div>
+        <span class="bill-status-badge"
+              [class.badge-paid]="b.status === 'PAID'"
+              [class.badge-pending]="b.status === 'PENDING'"
+              [class.badge-overdue]="b.status === 'OVERDUE'">
+          <span class="badge-dot"></span>
+          {{ b.status }}
+        </span>
+      </div>
+
+      <!-- Amount Display -->
+      <div class="bill-amount-display">
+        <span class="bill-amount-value">₹{{ b.amount | number:'1.2-2' }}</span>
+      </div>
+
+      <!-- Card Meta -->
+      <div class="bill-card-meta">
+        <div class="bill-meta-item">
+          <span class="bill-meta-icon">📅</span>
+          <div>
+            <span class="bill-meta-label">Due Date</span>
+            <span class="bill-meta-value">{{ b.dueDate }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Action (Pending) -->
+      <div class="bill-pay-section" *ngIf="b.status === 'PENDING'">
+        <div class="bill-pay-method">
+          <select [(ngModel)]="selectedPayment[b.id]" class="bill-pay-select">
+            <option value="">Select Method</option>
+            <option value="UPI">💳 UPI</option>
+            <option value="CREDIT_CARD">💳 Credit Card</option>
+            <option value="DEBIT_CARD">💳 Debit Card</option>
+            <option value="NET_BANKING">🏦 Net Banking</option>
+          </select>
+        </div>
+        <button class="bill-pay-btn" (click)="pay(b.id)">
+          <span>⚡</span> Pay Now
+        </button>
+      </div>
+
+      <!-- Paid Indicator -->
+      <div class="bill-paid-badge" *ngIf="b.status === 'PAID'">
+        <div class="bill-paid-check">✓</div>
+        <div class="bill-paid-text">
+          <span>Payment Complete</span>
+          <span class="bill-reward-tag">+10 Reward Points 🎁</span>
+        </div>
+      </div>
+
+      <!-- Overdue Warning -->
+      <div class="bill-overdue-warn" *ngIf="b.status === 'OVERDUE'">
+        <span>⚠️</span> This bill is overdue!
+      </div>
+    </div>
+      </div>
+    </div>
+
+    <!-- Right: Insights Sidebar -->
+    <aside class="bill-sidebar">
+      <!-- Payment Summary -->
+      <div class="bill-side-card">
+        <h4 class="bill-side-title">
+          <span>📊</span> Payment Summary
+        </h4>
+        <div class="bill-summary-visual">
+          <div class="bill-donut">
+            <div class="bill-donut-ring" [style.background]="getDonutGradient()">
+              <div class="bill-donut-inner">
+                <span class="bill-donut-pct">{{ getPaymentRate() | number:'1.0-0' }}%</span>
+                <span class="bill-donut-label">Paid</span>
+              </div>
+            </div>
+          </div>
+          <div class="bill-summary-stats">
+            <div class="bill-mini-stat">
+              <span class="bill-mini-dot paid"></span>
+              <span class="bill-mini-label">Paid</span>
+              <span class="bill-mini-value paid-color">{{ getPaidCount() }}</span>
+            </div>
+            <div class="bill-mini-stat">
+              <span class="bill-mini-dot pending"></span>
+              <span class="bill-mini-label">Pending</span>
+              <span class="bill-mini-value pending-color">{{ getPendingCount() }}</span>
+            </div>
+            <div class="bill-mini-stat">
+              <span class="bill-mini-dot overdue"></span>
+              <span class="bill-mini-label">Overdue</span>
+              <span class="bill-mini-value overdue-color">{{ getOverdueCount() }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Billers -->
+      <div class="bill-side-card">
+        <h4 class="bill-side-title">
+          <span>🏆</span> Top Billers
+        </h4>
+        <div class="bill-top-list">
+          <div *ngFor="let t of getTopBillers()" class="bill-top-item">
+            <div class="bill-top-left">
+              <span class="bill-top-icon">{{ getBillerIcon(t.name) }}</span>
+              <div>
+                <span class="bill-top-name">{{ t.name }}</span>
+                <span class="bill-top-count">{{ t.count }} payment{{ t.count > 1 ? 's' : '' }}</span>
+              </div>
+            </div>
+            <span class="bill-top-amount">₹{{ t.total | number:'1.0-0' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Payments -->
+      <div class="bill-side-card">
+        <h4 class="bill-side-title">
+          <span>🕐</span> Recent Payments
+        </h4>
+        <div class="bill-recent-list">
+          <div *ngFor="let b of getRecentPaid()" class="bill-recent-item">
+            <div class="bill-recent-left">
+              <span class="bill-recent-icon">{{ getBillerIcon(b.billerName) }}</span>
+              <div>
+                <span class="bill-recent-name">{{ b.billerName }}</span>
+                <span class="bill-recent-date">{{ b.dueDate }}</span>
+              </div>
+            </div>
+            <span class="bill-recent-amount">₹{{ b.amount | number:'1.0-0' }}</span>
+          </div>
+          <div *ngIf="getRecentPaid().length === 0" class="bill-no-recent">
+            No recent payments yet
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Info -->
+      <div class="bill-side-card bill-info-card">
+        <div class="bill-info-icon">🧾</div>
+        <h4>Never Miss a Bill</h4>
+        <p>Pay your bills on time and earn <strong>10 Reward Points</strong> for each payment. Points can be redeemed for exciting rewards!</p>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Empty State -->
+  <div class="bill-empty" *ngIf="bills.length === 0 && !showForm">
+    <div class="bill-empty-visual">
+      <div class="bill-empty-circle"><span>🧾</span></div>
+      <div class="bill-empty-ring"></div>
+    </div>
+    <h3>No Bills Yet</h3>
+    <p>Add your recurring bills to track due dates and make payments on time.</p>
+    <button class="bill-add-btn" (click)="showForm = true">
+      <span class="bill-btn-icon">+</span>
+      <span>Add Your First Bill</span>
+    </button>
+  </div>
+</div>

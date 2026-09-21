@@ -1,0 +1,248 @@
+<div class="auth-container">
+  <div class="reg-card">
+    <div class="header-section">
+      <div class="logo-animation">🏦</div>
+      <h1>NeoBank</h1>
+      <p class="subtitle">Create Your Banking Account</p>
+      <div class="required-notice">
+        <small><span class="required">*</span> All fields are mandatory</small>
+      </div>
+    </div>
+
+    <form class="registration-form" #registrationForm="ngForm">
+      <!-- Full Name -->
+      <div class="form-group">
+        <label class="form-label">
+          Full Name <span class="required">*</span>
+        </label>
+        <input placeholder="Enter your full name" 
+               [(ngModel)]="user.fullName" 
+               name="fullName"
+               required
+               minlength="2"
+               maxlength="50"
+               [class.error]="errors.fullName"
+               [class.success]="user.fullName && !errors.fullName"
+               (blur)="validateField('fullName')"
+               class="form-input">
+        <span class="error-message" *ngIf="errors.fullName">{{ errors.fullName }}</span>
+        <span class="success-message" *ngIf="user.fullName && !errors.fullName">✓ Valid name</span>
+      </div>
+
+      <!-- Mobile -->
+      <div class="form-group">
+        <label class="form-label">
+          Mobile Number <span class="required">*</span>
+        </label>
+        <input placeholder="Enter 10-digit mobile number" 
+               [(ngModel)]="user.mobile" 
+               name="mobile"
+               type="tel"
+               required
+               maxlength="10"
+               [class.error]="errors.mobile"
+               [class.success]="user.mobile && !errors.mobile"
+               (blur)="validateField('mobile')"
+               (input)="sanitizeMobile()"
+               class="form-input">
+        <span class="error-message" *ngIf="errors.mobile">{{ errors.mobile }}</span>
+        <span class="success-message" *ngIf="user.mobile && !errors.mobile">✓ Valid mobile number</span>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label class="form-label">
+          Email Address <span class="required">*</span>
+        </label>
+        <input placeholder="Enter your email address" 
+               [(ngModel)]="user.email" 
+               name="email"
+               type="email"
+               required
+               [class.error]="errors.email"
+               [class.success]="user.email && !errors.email"
+               (blur)="validateField('email')"
+               class="form-input">
+        <span class="error-message" *ngIf="errors.email">{{ errors.email }}</span>
+        <span class="success-message" *ngIf="user.email && !errors.email">✓ Valid email</span>
+      </div>
+
+      <!-- Account Type -->
+      <div class="form-group">
+        <label class="form-label">
+          Account Type <span class="required">*</span>
+        </label>
+        <select [(ngModel)]="user.accountType" 
+                name="accountType" 
+                required
+                [class.error]="errors.accountType"
+                class="form-select">
+          <option value="">Select Account Type</option>
+          <option value="SAVINGS">💰 Savings Account</option>
+          <option value="CURRENT">💼 Current Account</option>
+        </select>
+        <span class="error-message" *ngIf="errors.accountType">{{ errors.accountType }}</span>
+      </div>
+
+      <!-- ID Type -->
+      <div class="form-group">
+        <label class="form-label">
+          ID Proof Type <span class="required">*</span>
+        </label>
+        <select [(ngModel)]="user.idType" 
+                name="idType" 
+                required
+                [class.error]="errors.idType"
+                (change)="validateField('idNumber')"
+                class="form-select">
+          <option value="">Select ID Type</option>
+          <option value="AADHAR">🆔 Aadhar Card</option>
+          <option value="PAN">📄 PAN Card</option>
+        </select>
+        <span class="error-message" *ngIf="errors.idType">{{ errors.idType }}</span>
+      </div>
+
+      <!-- ID Number -->
+      <div class="form-group">
+        <label class="form-label">
+          {{ user.idType === 'AADHAR' ? 'Aadhar Number' : 'PAN Number' }} <span class="required">*</span>
+        </label>
+        <input [placeholder]="user.idType === 'AADHAR' ? 'Enter 12-digit Aadhar number' : 'Enter PAN number (ABCDE1234F)'" 
+               [(ngModel)]="user.idNumber" 
+               name="idNumber"
+               required
+               [maxlength]="user.idType === 'AADHAR' ? 12 : 10"
+               [class.error]="errors.idNumber"
+               [class.success]="user.idNumber && !errors.idNumber"
+               (blur)="validateField('idNumber')"
+               (input)="sanitizeIdNumber()"
+               class="form-input">
+        <span class="error-message" *ngIf="errors.idNumber">{{ errors.idNumber }}</span>
+        <span class="success-message" *ngIf="user.idNumber && !errors.idNumber">✓ Valid {{ user.idType }}</span>
+        <div class="field-hint">
+          <small *ngIf="user.idType === 'AADHAR'">📝 12-digit Aadhar number without spaces</small>
+          <small *ngIf="user.idType === 'PAN'">📝 Format: 5 letters + 4 digits + 1 letter</small>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div class="form-group">
+        <label class="form-label">
+          Complete Address <span class="required">*</span>
+        </label>
+        <textarea placeholder="Enter your complete address with pin code" 
+                  [(ngModel)]="user.address" 
+                  name="address"
+                  required
+                  minlength="10"
+                  maxlength="200"
+                  rows="3"
+                  [class.error]="errors.address"
+                  [class.success]="user.address && !errors.address"
+                  (blur)="validateField('address')"
+                  class="form-textarea"></textarea>
+        <span class="error-message" *ngIf="errors.address">{{ errors.address }}</span>
+        <span class="success-message" *ngIf="user.address && !errors.address">✓ Valid address</span>
+        <div class="char-count">{{ user.address.length }}/200</div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label class="form-label">
+          Password <span class="required">*</span>
+          <button type="button" class="hint-toggle" (click)="togglePasswordHints()">
+            {{ showPasswordHints ? '🙈 Hide' : '👁️ Show' }} Requirements
+          </button>
+        </label>
+        <input type="password" 
+               placeholder="Create a strong password" 
+               [(ngModel)]="user.password" 
+               name="password"
+               required
+               minlength="8"
+               [class.error]="errors.password"
+               [class.success]="user.password && !errors.password"
+               [class]="'strength-' + getPasswordStrength()"
+               (blur)="validateField('password')"
+               class="form-input password-input">
+        
+        <!-- Password Strength Indicator -->
+        <div class="password-strength" *ngIf="user.password">
+          <div class="strength-bar">
+            <div class="strength-fill" [class]="'strength-' + getPasswordStrength()"></div>
+          </div>
+          <span class="strength-text">{{ getPasswordStrength() | titlecase }} Password</span>
+        </div>
+
+        <span class="error-message" *ngIf="errors.password">{{ errors.password }}</span>
+        <span class="success-message" *ngIf="user.password && !errors.password">✓ Strong password</span>
+        
+        <!-- Password Requirements -->
+        <div class="password-requirements" *ngIf="showPasswordHints">
+          <div class="requirement" [class.met]="hasMinLength()">
+            {{ hasMinLength() ? '✅' : '❌' }} At least 8 characters
+          </div>
+          <div class="requirement" [class.met]="hasLowercase()">
+            {{ hasLowercase() ? '✅' : '❌' }} One lowercase letter
+          </div>
+          <div class="requirement" [class.met]="hasUppercase()">
+            {{ hasUppercase() ? '✅' : '❌' }} One uppercase letter
+          </div>
+          <div class="requirement" [class.met]="hasDigit()">
+            {{ hasDigit() ? '✅' : '❌' }} One number
+          </div>
+          <div class="requirement" [class.met]="hasSpecialChar()">
+            {{ hasSpecialChar() ? '✅' : '❌' }} One special character (&#64;$!%*?&)
+          </div>
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="form-group">
+        <label class="form-label">
+          Confirm Password <span class="required">*</span>
+        </label>
+        <input type="password" 
+               placeholder="Re-enter your password" 
+               [(ngModel)]="user.confirmPassword" 
+               name="confirmPassword"
+               required
+               [class.error]="errors.confirmPassword"
+               [class.success]="user.confirmPassword && !errors.confirmPassword"
+               (blur)="validateField('confirmPassword')"
+               class="form-input">
+        <span class="error-message" *ngIf="errors.confirmPassword">{{ errors.confirmPassword }}</span>
+        <span class="success-message" *ngIf="user.confirmPassword && !errors.confirmPassword">✓ Passwords match</span>
+      </div>
+
+      <!-- Terms and Conditions -->
+      <div class="form-group terms-section">
+        <label class="checkbox-label">
+          <input type="checkbox" required #termsAccepted>
+          <span class="checkmark"></span>
+          I agree to the <a href="#" target="_blank">Terms & Conditions</a> and <a href="#" target="_blank">Privacy Policy</a>
+          <span class="required">*</span>
+        </label>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="button" 
+              class="primary-btn" 
+              [disabled]="isSubmitting || !termsAccepted.checked"
+              (click)="register()">
+        <span *ngIf="isSubmitting">
+          <i class="spinner"></i> Creating Account...
+        </span>
+        <span *ngIf="!isSubmitting">
+          🚀 Create Account
+        </span>
+      </button>
+
+      <div class="divider-text">Already have an account?</div>
+
+      <button type="button" class="secondary-btn" (click)="goToLogin()">
+        🔓 Login Here
+      </button>
+    </form>
+  </div>
+</div>

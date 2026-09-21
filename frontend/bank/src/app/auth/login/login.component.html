@@ -1,0 +1,117 @@
+<div class="auth-container">
+  <div class="auth-shell">
+    <div class="hero">
+      <div class="hero-top">
+        <div class="brand">NeoBank</div>
+      </div>
+      <h1>Built for trust. Designed for speed.</h1>
+      <p class="hero-subtitle">
+        One place to save, borrow, pay, and track with confidence.
+      </p>
+      <div class="hero-media">
+        <img src="assets/bank-illustration.png" alt="Security vault illustration" />
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <h2>Secure Login</h2>
+      <p class="subtitle">Welcome back. Verify and continue.</p>
+
+      <form autocomplete="off">
+        <input type="text" style="display:none">
+        <input type="password" style="display:none">
+
+        <input
+          type="email"
+          name="user_email_random"
+          placeholder="Email"
+          [(ngModel)]="email"
+          autocomplete="off"
+        />
+
+        <input
+          type="password"
+          name="user_password_random"
+          placeholder="Password"
+          [(ngModel)]="password"
+          autocomplete="new-password"
+        />
+
+        <p class="forgot-link">
+          <a (click)="goToForgotPassword()">Forgot Password?</a>
+        </p>
+
+        <div class="captcha-box">
+          <div class="captcha-text">
+            {{ captchaText }}
+          </div>
+
+          <button
+            type="button"
+            class="refresh-btn"
+            (click)="refreshCaptcha()">
+            ↻
+          </button>
+        </div>
+
+        <input
+          type="text"
+          name="captcha_field"
+          placeholder="Enter CAPTCHA"
+          [(ngModel)]="captchaInput"
+          autocomplete="off"
+        />
+
+        <button
+          type="button"
+          class="primary-btn"
+          (click)="login()">
+          Login
+        </button>
+      </form>
+
+      <p class="switch-link">
+        Don't have an account? <a (click)="goToRegister()">Create Account</a>
+      </p>
+
+      <p class="privacy-link">
+        By logging in, you agree to our <a (click)="showPrivacyPolicy = true">Privacy Policy</a>
+      </p>
+
+    </div>
+  </div>
+</div>
+
+<!-- Privacy Policy Modal -->
+<div class="privacy-overlay" *ngIf="showPrivacyPolicy" (click)="showPrivacyPolicy = false">
+  <div class="privacy-modal" (click)="$event.stopPropagation()">
+    <div class="privacy-header">
+      <h3>Privacy Policy</h3>
+      <button class="close-btn" (click)="showPrivacyPolicy = false">&times;</button>
+    </div>
+    <div class="privacy-body">
+      <h4>1. Information We Collect</h4>
+      <p>We collect personal information such as your name, email address, mobile number, identity documents, and financial data necessary for banking operations.</p>
+
+      <h4>2. How We Use Your Information</h4>
+      <p>Your data is used to provide banking services, verify identity, process transactions, and comply with regulatory requirements.</p>
+
+      <h4>3. Data Security</h4>
+      <p>We use industry-standard encryption (AES-256, TLS 1.3) to protect your data. Passwords are hashed using BCrypt and never stored in plain text.</p>
+
+      <h4>4. Data Sharing</h4>
+      <p>We do not sell your personal information. Data may be shared only with regulatory authorities as required by law.</p>
+
+      <h4>5. Your Rights</h4>
+      <p>You have the right to access, correct, or delete your personal data. Contact our support team to exercise these rights.</p>
+
+      <h4>6. Cookies & Sessions</h4>
+      <p>We use session tokens (JWT) for authentication. No third-party tracking cookies are used.</p>
+
+      <h4>7. Updates to This Policy</h4>
+      <p>We may update this policy periodically. Continued use of our services constitutes acceptance of the updated policy.</p>
+
+      <p class="policy-footer">Last updated: June 2026 | NeoBank</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,35 @@
+<div class="payment-home">
+  <h2>Payments</h2>
+  <p class="subtitle">Select a service to make a payment</p>
+
+  <div class="services-grid">
+    <div class="service-card" (click)="selectService('electricity')" [class.active]="selectedService === 'electricity'">
+      <span class="icon">⚡</span>
+      <span>Electricity</span>
+    </div>
+    <div class="service-card" (click)="selectService('water')" [class.active]="selectedService === 'water'">
+      <span class="icon">💧</span>
+      <span>Water</span>
+    </div>
+    <div class="service-card" (click)="selectService('internet')" [class.active]="selectedService === 'internet'">
+      <span class="icon">🌐</span>
+      <span>Internet</span>
+    </div>
+    <div class="service-card" (click)="selectService('mobile')" [class.active]="selectedService === 'mobile'">
+      <span class="icon">📱</span>
+      <span>Mobile</span>
+    </div>
+    <div class="service-card" (click)="selectService('gas')" [class.active]="selectedService === 'gas'">
+      <span class="icon">🔥</span>
+      <span>Gas</span>
+    </div>
+    <div class="service-card" (click)="selectService('insurance')" [class.active]="selectedService === 'insurance'">
+      <span class="icon">🛡️</span>
+      <span>Insurance</span>
+    </div>
+  </div>
+
+  <div *ngIf="selectedService" class="selected-msg">
+    <p>You selected: <strong>{{ selectedService | titlecase }}</strong></p>
+  </div>
+</div>

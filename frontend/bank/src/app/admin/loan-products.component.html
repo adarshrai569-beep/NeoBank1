@@ -1,0 +1,43 @@
+<h3>Loan Product Configuration</h3>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div>
+    <label>Product Name</label>
+    <input formControlName="productName" />
+  </div>
+  <div>
+    <label>Min Amount</label>
+    <input type="number" formControlName="minAmount" />
+  </div>
+  <div>
+    <label>Max Amount</label>
+    <input type="number" formControlName="maxAmount" />
+  </div>
+  <div>
+    <label>Annual Interest Rate (%)</label>
+    <input type="number" formControlName="annualInterestRate" />
+  </div>
+  <div>
+    <label>Allowed Tenures (comma separated months)</label>
+    <input formControlName="allowedTenures" placeholder="12,24,36" />
+  </div>
+  <button type="submit">Create Product</button>
+</form>
+
+<h4>Configured Products</h4>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th><th>Min</th><th>Max</th><th>Interest</th><th>Tenures</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let p of products">
+      <td>{{p.productName || p.name || p.name}}</td>
+      <td>{{p.minAmount}}</td>
+      <td>{{p.maxAmount}}</td>
+      <td>{{p.annualInterestRate}}</td>
+      <td>{{(p.allowedTenures || p.tenures || []).join(', ')}}</td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,253 @@
+<div class="budget-page">
+  <!-- Floating Particles -->
+  <div class="bdg-particles"><span></span><span></span><span></span><span></span><span></span></div>
+
+  <!-- Hero Header -->
+  <div class="bdg-hero">
+    <div class="bdg-hero-left">
+      <div class="bdg-hero-icon-wrap">
+        <div class="bdg-icon-ring"></div>
+        <span class="bdg-hero-emoji">📊</span>
+      </div>
+      <div>
+        <h2 class="bdg-title">Budget Manager</h2>
+        <p class="bdg-subtitle">Track and control your spending habits</p>
+      </div>
+    </div>
+    <div class="bdg-hero-actions">
+      <div class="bdg-month-wrapper">
+        <span class="bdg-month-icon">📅</span>
+        <input type="month" [(ngModel)]="selectedMonth" (change)="loadBudgets()" class="bdg-month-input" />
+      </div>
+      <button class="bdg-add-btn" (click)="showForm = !showForm">
+        <span class="bdg-btn-icon">{{ showForm ? '✕' : '+' }}</span>
+        <span>{{ showForm ? 'Cancel' : 'New Budget' }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Summary Stats -->
+  <div class="bdg-stats-bar" *ngIf="budgets.length > 0">
+    <div class="bdg-stat">
+      <span class="bdg-stat-label">Total Budgets</span>
+      <span class="bdg-stat-value">{{ budgets.length }}</span>
+    </div>
+    <div class="bdg-stat-divider"></div>
+    <div class="bdg-stat">
+      <span class="bdg-stat-label">Total Limit</span>
+      <span class="bdg-stat-value">₹{{ getTotalLimit() | number:'1.0-0' }}</span>
+    </div>
+    <div class="bdg-stat-divider"></div>
+    <div class="bdg-stat">
+      <span class="bdg-stat-label">Total Spent</span>
+      <span class="bdg-stat-value spent">₹{{ getTotalSpent() | number:'1.0-0' }}</span>
+    </div>
+    <div class="bdg-stat-divider"></div>
+    <div class="bdg-stat">
+      <span class="bdg-stat-label">Health Score</span>
+      <span class="bdg-stat-value" [class.healthy]="getHealthScore() <= 70" [class.warning]="getHealthScore() > 70 && getHealthScore() <= 100" [class.danger]="getHealthScore() > 100">
+        {{ getHealthScore() | number:'1.0-0' }}%
+      </span>
+    </div>
+  </div>
+
+  <!-- Create Budget Form -->
+  <div class="bdg-form-card" *ngIf="showForm">
+    <div class="bdg-form-header">
+      <span class="bdg-form-icon">✨</span>
+      <h3>Create Monthly Budget</h3>
+      <p>Set spending limits for a category</p>
+    </div>
+    <div class="bdg-form-body">
+      <div class="bdg-form-group">
+        <label class="bdg-form-label">Category</label>
+        <div class="bdg-select-wrapper">
+          <span class="bdg-input-icon">📁</span>
+          <select [(ngModel)]="newCategory" class="bdg-select">
+            <option value="">Select Category</option>
+            <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="bdg-form-group">
+        <label class="bdg-form-label">Monthly Limit</label>
+        <div class="bdg-amount-wrapper">
+          <span class="bdg-currency">₹</span>
+          <input type="number" [(ngModel)]="newLimit" placeholder="0.00" class="bdg-amount-input" min="1" />
+        </div>
+      </div>
+      <button class="bdg-submit-btn" (click)="createBudget()">
+        <span>🚀</span> Create Budget
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="bdg-layout" *ngIf="budgets.length > 0">
+    <!-- Left: Budget Cards Grid -->
+    <div class="bdg-main">
+      <div class="bdg-grid">
+        <div *ngFor="let b of budgets; let i = index" class="bdg-card" [style.animation-delay]="i * 0.08 + 's'"
+             [class.over-budget]="b.utilizationPercentage >= 100">
+      
+      <!-- Card Glow -->
+      <div class="bdg-card-glow" [style.background]="getCardGlow(b.utilizationPercentage)"></div>
+      
+      <!-- Card Top -->
+      <div class="bdg-card-top">
+        <div class="bdg-cat-wrapper">
+          <span class="bdg-cat-icon">{{ getCategoryIcon(b.category) }}</span>
+          <span class="bdg-cat-name">{{ b.category }}</span>
+        </div>
+        <div class="bdg-pct-ring" [style.background]="getCircleGradient(b.utilizationPercentage)">
+          <div class="bdg-pct-inner">
+            <span class="bdg-pct-value">{{ b.utilizationPercentage | number:'1.0-0' }}</span>
+            <span class="bdg-pct-symbol">%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="bdg-progress-track">
+        <div class="bdg-progress-fill"
+             [style.width.%]="b.utilizationPercentage > 100 ? 100 : b.utilizationPercentage"
+             [style.background]="getProgressGradient(b.utilizationPercentage)">
+          <div class="bdg-progress-shine"></div>
+        </div>
+      </div>
+
+      <!-- Card Details -->
+      <div class="bdg-card-details">
+        <div class="bdg-detail-row">
+          <div class="bdg-detail-label">
+            <span class="bdg-dot" style="background: #f87171;"></span>Spent
+          </div>
+          <span class="bdg-detail-value spent">₹{{ b.spentAmount | number:'1.2-2' }}</span>
+        </div>
+        <div class="bdg-detail-row">
+          <div class="bdg-detail-label">
+            <span class="bdg-dot" style="background: #818cf8;"></span>Limit
+          </div>
+          <span class="bdg-detail-value">₹{{ b.limitAmount | number:'1.2-2' }}</span>
+        </div>
+        <div class="bdg-detail-divider"></div>
+        <div class="bdg-detail-row remaining">
+          <div class="bdg-detail-label">Remaining</div>
+          <span class="bdg-detail-value" [class.negative]="b.remaining < 0" [class.positive]="b.remaining >= 0">
+            {{ b.remaining < 0 ? '-' : '' }}₹{{ (b.remaining < 0 ? -b.remaining : b.remaining) | number:'1.2-2' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Over Budget Warning -->
+      <div class="bdg-warning" *ngIf="b.utilizationPercentage >= 100">
+        <span>⚠️</span> Over budget by ₹{{ (-b.remaining) | number:'1.2-2' }}
+      </div>
+    </div>
+      </div>
+    </div>
+
+    <!-- Right: Insights Sidebar -->
+    <aside class="bdg-sidebar">
+      <!-- Spending Breakdown -->
+      <div class="bdg-side-card">
+        <h4 class="bdg-side-title">
+          <span>📈</span> Spending Breakdown
+        </h4>
+        <div class="bdg-breakdown-list">
+          <div *ngFor="let b of budgets" class="bdg-breakdown-item">
+            <div class="bdg-breakdown-left">
+              <span class="bdg-breakdown-icon">{{ getCategoryIcon(b.category) }}</span>
+              <span class="bdg-breakdown-name">{{ b.category }}</span>
+            </div>
+            <div class="bdg-breakdown-right">
+              <span class="bdg-breakdown-amount">₹{{ b.spentAmount | number:'1.0-0' }}</span>
+              <div class="bdg-breakdown-bar">
+                <div class="bdg-breakdown-fill" [style.width.%]="getSpendingShare(b.spentAmount)" [style.background]="getProgressGradient(b.utilizationPercentage)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Smart Tips -->
+      <div class="bdg-side-card">
+        <h4 class="bdg-side-title">
+          <span>💡</span> Smart Tips
+        </h4>
+        <div class="bdg-tips-list">
+          <div class="bdg-tip" *ngIf="getOverBudgetCount() > 0">
+            <span class="bdg-tip-icon warn">⚠️</span>
+            <p>You have <strong>{{ getOverBudgetCount() }}</strong> categories over budget. Consider reviewing your spending.</p>
+          </div>
+          <div class="bdg-tip" *ngIf="getOverBudgetCount() === 0">
+            <span class="bdg-tip-icon good">✅</span>
+            <p>Great job! All your budgets are within limits this month.</p>
+          </div>
+          <div class="bdg-tip">
+            <span class="bdg-tip-icon info">💰</span>
+            <p>You've saved <strong>₹{{ getSavings() | number:'1.0-0' }}</strong> from your total budget this month.</p>
+          </div>
+          <div class="bdg-tip" *ngIf="getTopCategory()">
+            <span class="bdg-tip-icon info">🔥</span>
+            <p>Highest spending: <strong>{{ getTopCategory() }}</strong> category.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Budget Health Gauge -->
+      <div class="bdg-side-card">
+        <h4 class="bdg-side-title">
+          <span>🎯</span> Monthly Goal
+        </h4>
+        <div class="bdg-goal-visual">
+          <div class="bdg-goal-ring" [style.background]="getCircleGradient(getHealthScore())">
+            <div class="bdg-goal-inner">
+              <span class="bdg-goal-pct" [class.healthy]="getHealthScore() <= 70" [class.warning]="getHealthScore() > 70 && getHealthScore() <= 100" [class.danger]="getHealthScore() > 100">
+                {{ getHealthScore() | number:'1.0-0' }}%
+              </span>
+              <span class="bdg-goal-label">Used</span>
+            </div>
+          </div>
+          <div class="bdg-goal-details">
+            <div class="bdg-goal-row">
+              <span>Budget</span>
+              <span>₹{{ getTotalLimit() | number:'1.0-0' }}</span>
+            </div>
+            <div class="bdg-goal-row">
+              <span>Spent</span>
+              <span class="spent">₹{{ getTotalSpent() | number:'1.0-0' }}</span>
+            </div>
+            <div class="bdg-goal-row remaining-row">
+              <span>Remaining</span>
+              <span [class.positive]="getTotalLimit() - getTotalSpent() >= 0" [class.negative]="getTotalLimit() - getTotalSpent() < 0">
+                ₹{{ (getTotalLimit() - getTotalSpent()) | number:'1.0-0' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Info -->
+      <div class="bdg-side-card bdg-info-card">
+        <div class="bdg-info-icon">🏦</div>
+        <h4>NeoBank Budget Tips</h4>
+        <p>Follow the 50/30/20 rule — allocate 50% for needs, 30% for wants, and 20% for savings.</p>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Empty State -->
+  <div class="bdg-empty" *ngIf="budgets.length === 0 && !showForm">
+    <div class="bdg-empty-visual">
+      <div class="bdg-empty-circle"><span>📊</span></div>
+      <div class="bdg-empty-ring"></div>
+    </div>
+    <h3>No Budgets Set</h3>
+    <p>Start managing your finances by creating a monthly budget for different spending categories.</p>
+    <button class="bdg-add-btn" (click)="showForm = true">
+      <span class="bdg-btn-icon">+</span>
+      <span>Create Your First Budget</span>
+    </button>
+  </div>
+</div>

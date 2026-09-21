@@ -1,0 +1,44 @@
+<div class="page-shell">
+  <div class="page-header">
+    <h3>Apply for a Loan</h3>
+    <div class="page-subtitle">Choose a product and set your preferred amount and tenure.</div>
+  </div>
+
+  <div class="section-card">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-grid">
+        <div class="form-field">
+          <label>Product</label>
+          <select formControlName="productId">
+            <option [ngValue]="null">-- select --</option>
+            <option *ngFor="let p of products" [ngValue]="p.id">{{p.productName || p.name}}</option>
+          </select>
+        </div>
+      </div>
+
+      <div *ngIf="selectedProduct as sel">
+        <div class="helper-text">Min ₹{{sel.minAmount}} · Max ₹{{sel.maxAmount}}</div>
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Amount</label>
+            <input type="number" formControlName="amount" />
+            <div class="helper-text" *ngIf="form.get('amount')?.hasError('min')">Minimum: ₹{{sel.minAmount}}</div>
+            <div class="helper-text" *ngIf="form.get('amount')?.hasError('max')">Maximum: ₹{{sel.maxAmount}}</div>
+          </div>
+          <div class="form-field">
+            <label>Tenure (months)</label>
+            <select formControlName="tenure">
+              <option value="">-- select tenure --</option>
+              <option *ngFor="let t of (sel.allowedTenures || [])" [value]="t">{{t}} months</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions-row" style="margin-top: 16px;">
+        <button class="btn btn-primary" type="submit" [disabled]="form.invalid">Submit Application</button>
+        <button class="btn btn-ghost" type="button" routerLink="/dashboard">Back to Dashboard</button>
+      </div>
+    </form>
+  </div>
+</div>

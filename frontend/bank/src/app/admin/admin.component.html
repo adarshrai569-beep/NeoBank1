@@ -1,0 +1,212 @@
+<div class="page-shell">
+  <div class="page-header">
+    <h2>Admin Control Center</h2>
+    <div class="page-subtitle">Monitor platform activity and manage approvals.</div>
+  </div>
+
+  <div class="admin-toolbar">
+    <div class="admin-tabs">
+      <button class="tab-btn" [class.active]="activeTab === 'dashboard'" (click)="setTab('dashboard')">Dashboard</button>
+      <button class="tab-btn" [class.active]="activeTab === 'pending'" (click)="setTab('pending')">Pending Approvals</button>
+      <button class="tab-btn" [class.active]="activeTab === 'users'" (click)="setTab('users')">User Management</button>
+      <button class="tab-btn" [class.active]="activeTab === 'health'" (click)="setTab('health')">System Health</button>
+    </div>
+    <button class="btn btn-ghost" (click)="goToDashboard()">Back to Dashboard</button>
+  </div>
+
+  <div *ngIf="activeTab === 'dashboard'" class="section-card">
+    <div class="section-title">Platform KPIs</div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Total Users</div>
+        <div class="kpi-value">{{ dashboard?.totalUsers ?? 0 }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Active Users</div>
+        <div class="kpi-value">{{ dashboard?.totalActiveUsers ?? 0 }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Total Loans</div>
+        <div class="kpi-value">{{ dashboard?.totalLoans ?? 0 }}</div>
+      </div>
+      <div class="kpi-card" [class.attention]="(dashboard?.pendingApprovals ?? 0) > 0">
+        <div class="kpi-label">Pending Approvals</div>
+        <div class="kpi-value">{{ dashboard?.pendingApprovals ?? 0 }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Total Transactions</div>
+        <div class="kpi-value">{{ dashboard?.totalTransactions ?? 0 }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Savings Rate</div>
+        <div class="kpi-value">{{ dashboard?.platformSavingsRate ?? 0 }}%</div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="activeTab === 'pending'" class="section-card">
+    <div class="section-title">Pending Approvals</div>
+    <div class="filter-row">
+      <label>
+        Module
+        <select [(ngModel)]="pendingModule" (change)="loadPendingApprovals()">
+          <option value="ALL">All</option>
+          <option value="LOAN">Loan Applications</option>
+        </select>
+      </label>
+    </div>
+
+    <table class="table" *ngIf="pendingApprovals.length > 0; else pendingEmpty">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Applicant</th>
+          <th>Product</th>
+          <th>Amount</th>
+          <th>Applied</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of pendingApprovals">
+          <td>{{ item.type }}</td>
+          <td>{{ item.applicantName }}</td>
+          <td>{{ item.productName }}</td>
+          <td>{{ formatCurrency(item.requestedAmount) }}</td>
+          <td>{{ formatDate(item.appliedAt) }}</td>
+          <td>
+            <div *ngIf="item.type === 'LOAN_APPLICATION'" class="review-row">
+              <input #remarks placeholder="Remarks" />
+              <button class="btn btn-ghost" (click)="decidePendingLoan(item.id, 'APPROVED', remarks.value)">
+                Approve
+              </button>
+              <button class="btn btn-ghost" (click)="decidePendingLoan(item.id, 'REJECTED', remarks.value)">
+                Reject
+              </button>
+            </div>
+            <span *ngIf="item.type !== 'LOAN_APPLICATION'">—</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #pendingEmpty>
+      <div class="empty-state">No pending approvals right now.</div>
+    </ng-template>
+  </div>
+
+  <div *ngIf="activeTab === 'users'" class="section-card">
+    <div class="section-title">User Management</div>
+    <table class="table" *ngIf="users.length > 0; else usersEmpty">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Registered</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.id }}</td>
+          <td>{{ user.fullName }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role }}</td>
+          <td>
+            <span class="status-pill" [class.status-active]="user.isActive" [class.status-inactive]="!user.isActive">
+              {{ user.isActive ? 'ACTIVE' : 'INACTIVE' }}
+            </span>
+          </td>
+          <td>{{ formatDate(user.createdAt) }}</td>
+          <td>
+            <button class="btn btn-ghost" (click)="updateUserStatus(user, !user.isActive)">
+              {{ user.isActive ? 'Deactivate' : 'Activate' }}
+            </button>
+            <button class="btn btn-ghost" (click)="loadUserActivity(user)">
+              View Activity
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #usersEmpty>
+      <div class="empty-state">No users found.</div>
+    </ng-template>
+
+    <div class="section-card activity-panel" *ngIf="activityUser">
+      <div class="section-title">
+        Recent Activity — {{ activityUser.fullName }}
+      </div>
+      <button class="btn btn-ghost" (click)="clearUserActivity()">Close</button>
+
+      <div *ngIf="activityLoading" class="empty-state">Loading activity...</div>
+
+      <div *ngIf="!activityLoading">
+        <div class="activity-grid">
+          <div>
+            <div class="activity-title">Recent Transactions</div>
+            <table class="table" *ngIf="(userActivity?.recentTransactions || []).length > 0; else noTx">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let tx of userActivity.recentTransactions">
+                  <td>{{ tx.id }}</td>
+                  <td>{{ tx.type }}</td>
+                  <td>{{ formatCurrency(tx.amount) }}</td>
+                  <td>{{ formatDateTime(tx.transactionDate) }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <ng-template #noTx>
+              <div class="empty-state">No recent transactions.</div>
+            </ng-template>
+          </div>
+          <div>
+            <div class="activity-title">Recent Logins</div>
+            <div *ngIf="(userActivity?.recentLogins || []).length > 0; else noLogins">
+              <ul class="activity-list">
+                <li *ngFor="let login of userActivity.recentLogins">
+                  {{ formatDateTime(login) }}
+                </li>
+              </ul>
+            </div>
+            <ng-template #noLogins>
+              <div class="empty-state">No login events available.</div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="activeTab === 'health'" class="section-card">
+    <div class="section-title">System Health</div>
+    <div class="health-grid" *ngIf="systemHealth; else healthEmpty">
+      <div class="health-card">
+        <div class="health-label">Database Status</div>
+        <div class="health-value" [class.health-up]="systemHealth.dbStatus === 'UP'" [class.health-down]="systemHealth.dbStatus !== 'UP'">
+          {{ systemHealth.dbStatus }}
+        </div>
+      </div>
+      <div class="health-card">
+        <div class="health-label">Active Sessions</div>
+        <div class="health-value">{{ systemHealth.activeSessions ?? 0 }}</div>
+      </div>
+      <div class="health-card">
+        <div class="health-label">Uptime (seconds)</div>
+        <div class="health-value">{{ systemHealth.serverUptimeSeconds ?? 0 }}</div>
+      </div>
+    </div>
+    <ng-template #healthEmpty>
+      <div class="empty-state">System health data unavailable.</div>
+    </ng-template>
+  </div>
+</div>

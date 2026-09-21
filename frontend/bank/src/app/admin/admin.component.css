@@ -1,0 +1,176 @@
+.admin-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  border: 1px solid #d4dbe7;
+  background: #f4f6fb;
+  color: #243b55;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tab-btn.active {
+  background: #1b3b6f;
+  color: #fff;
+  border-color: #1b3b6f;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.kpi-card {
+  border-radius: 14px;
+  padding: 16px;
+  border: 1px solid #eef1f6;
+  background: #fbfcfe;
+  box-shadow: 0 10px 24px rgba(8, 20, 38, 0.06);
+}
+
+.kpi-card.attention {
+  border-color: #f4b942;
+  background: #fff8e4;
+}
+
+.kpi-label {
+  font-size: 12px;
+  color: #6b7a93;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.kpi-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.filter-row {
+  margin: 12px 0 18px;
+}
+
+.filter-row select {
+  margin-left: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #d4dbe7;
+}
+
+.review-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.review-row input {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #d4dbe7;
+  min-width: 160px;
+}
+
+.status-pill {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-active {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-inactive {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.health-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.health-card {
+  border-radius: 14px;
+  padding: 16px;
+  background: #fbfcfe;
+  border: 1px solid #eef1f6;
+  box-shadow: 0 10px 24px rgba(8, 20, 38, 0.06);
+}
+
+.health-label {
+  font-size: 12px;
+  color: #6b7a93;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.health-value {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.health-up {
+  color: #2e7d32;
+}
+
+.health-down {
+  color: #c62828;
+}
+
+.activity-panel {
+  margin-top: 18px;
+}
+
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.activity-title {
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #243b55;
+}
+
+.activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.activity-list li {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #f8f7f2;
+  border: 1px solid #ece7dc;
+  color: #2f3d50;
+  font-size: 13px;
+}

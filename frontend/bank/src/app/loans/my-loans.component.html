@@ -1,0 +1,43 @@
+<div class="page-shell" *ngIf="!selectedAccountId">
+  <div class="page-header">
+    <h3>My Loan Accounts</h3>
+    <div class="page-subtitle">Track active accounts and explore repayment timelines.</div>
+  </div>
+
+  <div class="section-card">
+    <div *ngIf="accounts.length === 0">No active loan accounts.</div>
+
+    <table class="table" *ngIf="accounts.length > 0">
+      <thead>
+        <tr>
+          <th>Account ID</th>
+          <th>Product</th>
+          <th>Principal</th>
+          <th>EMI</th>
+          <th>Tenure</th>
+          <th>Disbursed</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let acc of accounts">
+          <td>{{ acc.id }}</td>
+          <td>{{ acc.productName }}</td>
+          <td>₹{{ acc.principalAmount }}</td>
+          <td>₹{{ acc.emiAmount }}</td>
+          <td>{{ acc.tenureMonths }} months</td>
+          <td>{{ acc.disbursedAt | date:'mediumDate' }}</td>
+          <td>
+            <button class="btn btn-ghost" (click)="openSchedule(acc.id)">View Schedule</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Inline Repayment Schedule -->
+<div *ngIf="selectedAccountId">
+  <button class="back-link" (click)="backToAccounts()">← Back to My Loans</button>
+  <app-repayment-schedule [loanAccountId]="selectedAccountId"></app-repayment-schedule>
+</div>

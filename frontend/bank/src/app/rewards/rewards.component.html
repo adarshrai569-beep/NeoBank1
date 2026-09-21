@@ -1,0 +1,215 @@
+<div class="rwd-page">
+  <!-- Particles -->
+  <div class="rwd-particles"><span></span><span></span><span></span><span></span><span></span></div>
+
+  <!-- Hero Header -->
+  <div class="rwd-hero">
+    <div class="rwd-hero-left">
+      <div class="rwd-hero-icon-wrap">
+        <div class="rwd-icon-ring"></div>
+        <span class="rwd-hero-emoji">🎁</span>
+      </div>
+      <div>
+        <h2 class="rwd-title">Reward Points</h2>
+        <p class="rwd-subtitle">Earn points on every bill payment and transaction</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="rwd-layout">
+    <!-- Left Content -->
+    <div class="rwd-main">
+      <!-- Points Hero Card -->
+      <div class="rwd-points-card">
+        <div class="rwd-points-glow"></div>
+        <div class="rwd-points-content">
+          <div class="rwd-points-left">
+            <div class="rwd-tier-badge" [style.background]="tierColor">
+              <span class="rwd-tier-icon">{{ getTierIcon() }}</span>
+              {{ tier }}
+            </div>
+            <div class="rwd-next-tier">{{ nextTier }}</div>
+          </div>
+          <div class="rwd-points-right">
+            <div class="rwd-points-ring" [style.background]="getPointsRingGradient()">
+              <div class="rwd-points-ring-inner">
+                <span class="rwd-pts-number">{{ points }}</span>
+                <span class="rwd-pts-label">Points</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="rwd-progress-section">
+          <div class="rwd-progress-labels">
+            <span>Progress to {{ getNextTierName() }}</span>
+            <span>{{ getProgressPercentage() | number:'1.0-0' }}%</span>
+          </div>
+          <div class="rwd-progress-track">
+            <div class="rwd-progress-fill" [style.width.%]="getProgressPercentage()" [style.background]="'linear-gradient(90deg, ' + tierColor + ', ' + tierColor + '99)'">
+              <div class="rwd-progress-shine"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How to Earn Points -->
+      <div class="rwd-earn-section">
+        <h3 class="rwd-section-title"><span>💡</span> How to Earn Points</h3>
+        <div class="rwd-earn-grid">
+          <div class="rwd-earn-card">
+            <div class="rwd-earn-icon-wrap" style="background: rgba(59,130,246,0.1);">
+              <span>💳</span>
+            </div>
+            <div class="rwd-earn-info">
+              <h4>Pay Bills</h4>
+              <p>+10 points per bill payment</p>
+            </div>
+            <span class="rwd-earn-badge">+10</span>
+          </div>
+          <div class="rwd-earn-card">
+            <div class="rwd-earn-icon-wrap" style="background: rgba(16,185,129,0.1);">
+              <span>💸</span>
+            </div>
+            <div class="rwd-earn-info">
+              <h4>Transactions</h4>
+              <p>+5 points per transaction</p>
+            </div>
+            <span class="rwd-earn-badge">+5</span>
+          </div>
+          <div class="rwd-earn-card">
+            <div class="rwd-earn-icon-wrap" style="background: rgba(139,92,246,0.1);">
+              <span>🏦</span>
+            </div>
+            <div class="rwd-earn-info">
+              <h4>Loan Repayment</h4>
+              <p>+20 points per EMI paid</p>
+            </div>
+            <span class="rwd-earn-badge">+20</span>
+          </div>
+          <div class="rwd-earn-card">
+            <div class="rwd-earn-icon-wrap" style="background: rgba(245,158,11,0.1);">
+              <span>🎯</span>
+            </div>
+            <div class="rwd-earn-info">
+              <h4>Budget Goals</h4>
+              <p>+15 points for staying under budget</p>
+            </div>
+            <span class="rwd-earn-badge">+15</span>
+          </div>
+          <div class="rwd-earn-card">
+            <div class="rwd-earn-icon-wrap" style="background: rgba(236,72,153,0.1);">
+              <span>👥</span>
+            </div>
+            <div class="rwd-earn-info">
+              <h4>Referrals</h4>
+              <p>+50 points per friend joined</p>
+            </div>
+            <span class="rwd-earn-badge">+50</span>
+          </div>
+          <div class="rwd-earn-card">
+            <div class="rwd-earn-icon-wrap" style="background: rgba(20,184,166,0.1);">
+              <span>📅</span>
+            </div>
+            <div class="rwd-earn-info">
+              <h4>Monthly Streak</h4>
+              <p>+25 points for 30-day activity</p>
+            </div>
+            <span class="rwd-earn-badge">+25</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Sidebar -->
+    <aside class="rwd-sidebar">
+      <!-- Tier Progress Card -->
+      <div class="rwd-side-card">
+        <h4 class="rwd-side-title"><span>🏆</span> Reward Tiers</h4>
+        <div class="rwd-tier-list">
+          <div class="rwd-tier-item" [class.active]="tier === 'BRONZE'" [class.completed]="points >= 50">
+            <div class="rwd-tier-left">
+              <div class="rwd-tier-dot" style="background: #cd7f32;"></div>
+              <div class="rwd-tier-line" [class.filled]="points >= 50"></div>
+            </div>
+            <div class="rwd-tier-content">
+              <span class="rwd-tier-name">🥉 Bronze</span>
+              <span class="rwd-tier-range">0 - 49 points</span>
+            </div>
+            <span class="rwd-tier-check" *ngIf="points >= 50">✓</span>
+          </div>
+          <div class="rwd-tier-item" [class.active]="tier === 'SILVER'" [class.completed]="points >= 200">
+            <div class="rwd-tier-left">
+              <div class="rwd-tier-dot" style="background: #94a3b8;"></div>
+              <div class="rwd-tier-line" [class.filled]="points >= 200"></div>
+            </div>
+            <div class="rwd-tier-content">
+              <span class="rwd-tier-name">🥈 Silver</span>
+              <span class="rwd-tier-range">50 - 199 points</span>
+            </div>
+            <span class="rwd-tier-check" *ngIf="points >= 200">✓</span>
+          </div>
+          <div class="rwd-tier-item" [class.active]="tier === 'GOLD'" [class.completed]="points >= 500">
+            <div class="rwd-tier-left">
+              <div class="rwd-tier-dot" style="background: #f59e0b;"></div>
+              <div class="rwd-tier-line" [class.filled]="points >= 500"></div>
+            </div>
+            <div class="rwd-tier-content">
+              <span class="rwd-tier-name">🥇 Gold</span>
+              <span class="rwd-tier-range">200 - 499 points</span>
+            </div>
+            <span class="rwd-tier-check" *ngIf="points >= 500">✓</span>
+          </div>
+          <div class="rwd-tier-item" [class.active]="tier === 'PLATINUM'">
+            <div class="rwd-tier-left">
+              <div class="rwd-tier-dot" style="background: #6366f1;"></div>
+            </div>
+            <div class="rwd-tier-content">
+              <span class="rwd-tier-name">💎 Platinum</span>
+              <span class="rwd-tier-range">500+ points</span>
+            </div>
+            <span class="rwd-tier-check" *ngIf="points >= 500">✓</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Perks Card -->
+      <div class="rwd-side-card">
+        <h4 class="rwd-side-title"><span>🎉</span> Your Perks</h4>
+        <div class="rwd-perks-list">
+          <div class="rwd-perk-item" [class.unlocked]="points >= 0">
+            <span class="rwd-perk-icon">🎁</span>
+            <span class="rwd-perk-text">Basic Rewards Access</span>
+          </div>
+          <div class="rwd-perk-item" [class.unlocked]="points >= 50">
+            <span class="rwd-perk-icon">💰</span>
+            <span class="rwd-perk-text">Cashback on Bills</span>
+          </div>
+          <div class="rwd-perk-item" [class.unlocked]="points >= 200">
+            <span class="rwd-perk-icon">⚡</span>
+            <span class="rwd-perk-text">Priority Transactions</span>
+          </div>
+          <div class="rwd-perk-item" [class.unlocked]="points >= 200">
+            <span class="rwd-perk-icon">🏷️</span>
+            <span class="rwd-perk-text">Reduced Fees</span>
+          </div>
+          <div class="rwd-perk-item" [class.unlocked]="points >= 500">
+            <span class="rwd-perk-icon">👑</span>
+            <span class="rwd-perk-text">VIP Support Access</span>
+          </div>
+          <div class="rwd-perk-item" [class.unlocked]="points >= 500">
+            <span class="rwd-perk-icon">🌟</span>
+            <span class="rwd-perk-text">Exclusive Offers</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Card -->
+      <div class="rwd-side-card rwd-info-card">
+        <div class="rwd-info-icon">💎</div>
+        <h4>Keep Earning!</h4>
+        <p>You're only <strong>{{ points >= 500 ? 0 : (tier === 'GOLD' ? 500 - points : tier === 'SILVER' ? 200 - points : 50 - points) }}</strong> points away from your next tier. Keep banking to unlock more rewards!</p>
+      </div>
+    </aside>
+  </div>
+</div>

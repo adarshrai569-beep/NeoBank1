@@ -1,0 +1,165 @@
+<div class="loan-page" *ngIf="!showApply && !showMyLoans">
+  <!-- Particles -->
+  <div class="loan-particles"><span></span><span></span><span></span><span></span><span></span></div>
+
+  <!-- Hero Header -->
+  <div class="loan-hero">
+    <div class="loan-hero-left">
+      <div class="loan-hero-icon-wrap">
+        <div class="loan-icon-ring"></div>
+        <span class="loan-hero-emoji">🏦</span>
+      </div>
+      <div>
+        <h2 class="loan-title">Loans</h2>
+        <p class="loan-subtitle">Explore loan products, apply, and track your applications</p>
+      </div>
+    </div>
+    <div class="loan-hero-actions">
+      <button class="loan-btn-primary" (click)="goToApply()">
+        <span>📝</span> Apply for a Loan
+      </button>
+      <button class="loan-btn-secondary" (click)="goToMyLoans()">
+        <span>📂</span> My Loan Accounts
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="loan-layout">
+    <!-- Left: Products + Applications -->
+    <div class="loan-main">
+      <!-- Available Products -->
+      <h3 class="loan-section-title"><span>💎</span> Available Loan Products</h3>
+      <div class="loan-products-grid" *ngIf="products.length > 0">
+        <div *ngFor="let p of products; let i = index" class="loan-product-card" [style.animation-delay]="i * 0.06 + 's'">
+          <div class="loan-prod-glow"></div>
+          <div class="loan-prod-header">
+            <div class="loan-prod-icon">
+              <span *ngIf="p.productName?.includes('Home')">🏠</span>
+              <span *ngIf="p.productName?.includes('Personal')">💰</span>
+              <span *ngIf="p.productName?.includes('Education')">🎓</span>
+              <span *ngIf="p.productName?.includes('Car')">🚗</span>
+              <span *ngIf="p.productName?.includes('Gold')">🥇</span>
+              <span *ngIf="p.productName?.includes('Business')">💼</span>
+            </div>
+            <h4 class="loan-prod-name">{{ p.productName || p.name }}</h4>
+            <div class="loan-rate-badge">{{ p.annualInterestRate }}% p.a.</div>
+          </div>
+          <div class="loan-prod-details">
+            <div class="loan-prod-detail">
+              <span class="loan-detail-label">Min Amount</span>
+              <span class="loan-detail-value">₹{{ p.minAmount | number }}</span>
+            </div>
+            <div class="loan-prod-detail">
+              <span class="loan-detail-label">Max Amount</span>
+              <span class="loan-detail-value">₹{{ p.maxAmount | number }}</span>
+            </div>
+            <div class="loan-prod-detail full">
+              <span class="loan-detail-label">Tenure Options</span>
+              <span class="loan-detail-value">{{ p.allowedTenures?.join(', ') }} months</span>
+            </div>
+          </div>
+          <button class="loan-apply-btn" (click)="goToApply()">
+            <span>Apply Now</span><span class="loan-btn-arrow">→</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- My Applications -->
+      <h3 class="loan-section-title" style="margin-top: 32px;"><span>📋</span> My Applications</h3>
+      <div *ngIf="myApplications.length === 0" class="loan-empty-msg">
+        <span>📭</span> No applications yet. Apply for a loan above!
+      </div>
+      <div class="loan-apps-grid" *ngIf="myApplications.length > 0">
+        <div *ngFor="let app of myApplications; let i = index" class="loan-app-card" [style.animation-delay]="i * 0.05 + 's'">
+          <div class="loan-app-left">
+            <span class="loan-app-icon">🏦</span>
+            <div>
+              <span class="loan-app-product">{{ app.productName || 'Loan' }}</span>
+              <span class="loan-app-amount">₹{{ app.amount | number }}</span>
+            </div>
+          </div>
+          <span class="loan-status-badge"
+            [class.badge-pending]="app.status === 'PENDING'"
+            [class.badge-approved]="app.status === 'APPROVED'"
+            [class.badge-rejected]="app.status === 'REJECTED'">
+            <span class="loan-badge-dot"></span>
+            {{ app.status }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Sidebar -->
+    <aside class="loan-sidebar">
+      <!-- Quick Info -->
+      <div class="loan-side-card">
+        <h4 class="loan-side-title"><span>📊</span> Loan Summary</h4>
+        <div class="loan-summary-list">
+          <div class="loan-summary-item">
+            <span class="loan-summary-label">Products Available</span>
+            <span class="loan-summary-value">{{ products.length }}</span>
+          </div>
+          <div class="loan-summary-item">
+            <span class="loan-summary-label">My Applications</span>
+            <span class="loan-summary-value">{{ myApplications.length }}</span>
+          </div>
+          <div class="loan-summary-item">
+            <span class="loan-summary-label">Approved</span>
+            <span class="loan-summary-value approved-color">{{ getApprovedCount() }}</span>
+          </div>
+          <div class="loan-summary-item">
+            <span class="loan-summary-label">Pending</span>
+            <span class="loan-summary-value pending-color">{{ getPendingCount() }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Benefits -->
+      <div class="loan-side-card">
+        <h4 class="loan-side-title"><span>✨</span> Why NeoBank Loans?</h4>
+        <div class="loan-benefits-list">
+          <div class="loan-benefit">
+            <span class="loan-benefit-icon">⚡</span>
+            <span>Instant approval in minutes</span>
+          </div>
+          <div class="loan-benefit">
+            <span class="loan-benefit-icon">📉</span>
+            <span>Lowest interest rates</span>
+          </div>
+          <div class="loan-benefit">
+            <span class="loan-benefit-icon">📱</span>
+            <span>100% digital process</span>
+          </div>
+          <div class="loan-benefit">
+            <span class="loan-benefit-icon">🔄</span>
+            <span>Flexible repayment options</span>
+          </div>
+          <div class="loan-benefit">
+            <span class="loan-benefit-icon">🎁</span>
+            <span>Earn reward points on EMI</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tips Card -->
+      <div class="loan-side-card loan-info-card">
+        <div class="loan-info-icon">💡</div>
+        <h4>Smart Borrowing</h4>
+        <p>Only borrow what you need. A good rule of thumb is keeping your EMI below 40% of your monthly income.</p>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- Apply Component (inline) -->
+<div *ngIf="showApply">
+  <button class="loan-back-link" (click)="goBackToProducts()">← Back to Loan Products</button>
+  <app-loan-apply></app-loan-apply>
+</div>
+
+<!-- My Loans Component (inline) -->
+<div *ngIf="showMyLoans">
+  <button class="loan-back-link" (click)="goBackToProducts()">← Back to Loan Products</button>
+  <app-my-loans></app-my-loans>
+</div>
