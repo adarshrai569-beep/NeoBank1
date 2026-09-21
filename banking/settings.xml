@@ -1,0 +1,11 @@
+<settings>
+  <proxies>
+    <proxy>
+      <id>company-proxy</id>
+      <active>true</active>
+      <protocol>http</protocol>
+      <host>YOUR_PROXY_HOST</host>
+      <port>YOUR_PORT</port>
+    </proxy>
+  </proxies>
+</settings>

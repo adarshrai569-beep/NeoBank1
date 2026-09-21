@@ -1,0 +1,11 @@
+.env
+.venv/
+node_modules/
+dist/
+.angular/
+target/
+*.class
+.settings/
+.classpath
+.project
+.factorypath
