@@ -5,8 +5,7 @@ COPY pom.xml .
 RUN mvn -q -B dependency:go-offline
 COPY src ./src
 # tests need a live MySQL, so skip them in the image build
-RUN mvn -q -B -DskipTests clean package
-
+RUN mvn -q -B -Dmaven.test.skip=true clean package
 # ---- runtime stage ----
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
